@@ -1,12 +1,12 @@
 # Predição de Atrasos em Voos ✈️
 
-Projeto da disciplina de Inteligência Artificial — Machine Learning para predição de atrasos em voos com Python.
+Projeto da disciplina de Inteligência Artificial (Machine Learning) para predição de atrasos em voos com Python.
 
 ---
 
 ## Tecnologias utilizadas
 
-- Python 3.11+
+- Python 3.14.3
 - pandas
 - scikit-learn
 - XGBoost
@@ -46,11 +46,10 @@ ControleDeVoo/
 ├── Data/
 │   └── flights.csv   ← coloque o arquivo aqui
 ├── main.py
-├── preparar_dados.py
 └── ...
 ```
 
-### 4. Rodar o modelo principal
+### 4. Rodar o modelo
 
 ```bash
 python main.py
@@ -61,18 +60,6 @@ O script vai:
 - Treinar os modelos Random Forest e XGBoost
 - Exibir acurácia, recall e relatório completo no terminal
 - Salvar os gráficos (curva ROC, matrizes de confusão) em `resultados.png`
-
-### 5. (Opcional) Gerar amostra reduzida
-
-Caso queira gerar uma amostra menor do dataset (usada para testes):
-
-```bash
-python preparar_dados.py
-```
-
-Isso cria o arquivo `Data/voos_orange.csv` com 10.000 linhas.
-
----
 
 ## Resultados obtidos
 
@@ -87,4 +74,4 @@ Os gráficos completos estão disponíveis no arquivo `resultados.png`.
 
 ## Grupo
 
-Trabalho desenvolvido em grupo para a disciplina de Inteligência Artificial.
+Trabalho desenvolvido em grupo por Danielli Machado, Karen Stackoski, Maria Fernanda e Rafael Henriques.

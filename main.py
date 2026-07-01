@@ -1,7 +1,6 @@
 # =============================================================
-# PROJETO IA — Predição de Atrasos em Voos
-# Disciplina: Inteligência Artificial
-# Ferramentas: pandas, scikit-learn, xgboost, matplotlib
+# PROJETO IA para predição de atrasos em voos
+# Bibliotecas: pandas, scikit-learn, xgboost, matplotlib
 # =============================================================
 
 import pandas as pd
@@ -17,18 +16,10 @@ from xgboost import XGBClassifier
 import warnings
 warnings.filterwarnings('ignore')
 
-# =============================================================
-# ETAPA 1 — CARREGAR OS DADOS
-# =============================================================
-
 print("Carregando dataset...")
 df = pd.read_csv('data/flights.csv', low_memory=False)
 print(f"Dataset carregado! {df.shape[0]} linhas e {df.shape[1]} colunas.\n")
 
-
-# =============================================================
-# ETAPA 2 — EXPLORAÇÃO DOS DADOS
-# =============================================================
 
 print("=== PRIMEIRAS LINHAS DO DATASET ===")
 print(df.head())
@@ -42,12 +33,7 @@ print(df.info())
 print("\n=== VALORES NULOS POR COLUNA ===")
 print(df.isnull().sum())
 
-
-# =============================================================
-# ETAPA 3 — PREPARAR OS DADOS
-# =============================================================
-
-# Seleciona apenas as colunas mais relevantes para o modelo
+# Selecionando as colunas mais relevantes
 colunas = [
     'MONTH', 'DAY_OF_WEEK', 'AIRLINE',
     'DEPARTURE_DELAY', 'ARRIVAL_DELAY',
@@ -55,12 +41,12 @@ colunas = [
     'AIR_TIME', 'DEPARTURE_TIME'
 ]
 
-# Filtra só as colunas que existem no dataset
+# Filtrando as colunas
 colunas = [c for c in colunas if c in df.columns]
 df = df[colunas].copy()
 
-# Cria a coluna alvo: atrasou = 1 se atraso na chegada > 15 minutos
-# (padrão da aviação: atraso oficial é acima de 15 min)
+# Criação da coluna alvo 
+# Regra: atrasou = 1 se atraso na chegada > 15 minutos
 df['ATRASOU'] = (df['ARRIVAL_DELAY'] > 15).astype(int)
 
 print(f"\n=== DISTRIBUIÇÃO DA VARIÁVEL ALVO ===")
@@ -68,29 +54,24 @@ contagem = df['ATRASOU'].value_counts()
 print(f"Não atrasou (0): {contagem[0]} voos")
 print(f"Atrasou (1):     {contagem[1]} voos")
 
-# Remove linhas com valores nulos
+# Removendo linhas com valores nulos
 df = df.dropna()
 print(f"\nApós remover nulos: {df.shape[0]} linhas restantes.")
 
-# Converte companhia aérea (texto) para número
-# O modelo só entende números, não texto
+# Convertendo texto para número
 df['AIRLINE'] = pd.Categorical(df['AIRLINE']).codes
 
-# Remove a coluna de atraso na chegada (não pode usar pra prever — seria trapaça!)
+# Removendo coluna de atraso na chegada
 df = df.drop(columns=['ARRIVAL_DELAY'])
 
-# Usa apenas uma amostra de 100.000 linhas para rodar mais rápido
-# (o dataset completo tem ~5 milhões de linhas)
+# Amostra de 100.000 linhas para rodar mais rápido
 df = df.sample(n=100000, random_state=42)
 print(f"Usando amostra de {len(df)} voos para treinamento.\n")
 
+# Divisão: TREINO X TESTE
 
-# =============================================================
-# ETAPA 4 — DIVIDIR EM TREINO E TESTE
-# =============================================================
-
-# X = atributos (entradas do modelo)
-# y = o que queremos prever (atrasou ou não)
+# X = entradas
+# y = resultados
 X = df.drop(columns=['ATRASOU'])
 y = df['ATRASOU']
 
@@ -100,11 +81,6 @@ X_treino, X_teste, y_treino, y_teste = train_test_split(
 )
 
 print(f"Treino: {X_treino.shape[0]} voos | Teste: {X_teste.shape[0]} voos\n")
-
-
-# =============================================================
-# ETAPA 5 — TREINAR OS MODELOS
-# =============================================================
 
 # ----- MODELO 1: Random Forest -----
 print("Treinando Random Forest...")
@@ -123,11 +99,6 @@ y_pred_xgb = xgb.predict(X_teste)
 y_prob_xgb = xgb.predict_proba(X_teste)[:, 1]
 print("XGBoost treinado!\n")
 
-
-# =============================================================
-# ETAPA 6 — AVALIAR OS MODELOS
-# =============================================================
-
 print("=" * 50)
 print("RESULTADOS — RANDOM FOREST")
 print("=" * 50)
@@ -145,9 +116,7 @@ print("\nRelatório completo:")
 print(classification_report(y_teste, y_pred_xgb, target_names=['Não atrasou', 'Atrasou']))
 
 
-# =============================================================
-# ETAPA 7 — GRÁFICOS PARA APRESENTAÇÃO
-# =============================================================
+# ELABORAÇÃO DOS GRÁFICOS
 
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 fig.suptitle('Predição de Atrasos em Voos — Resultados', fontsize=16, fontweight='bold')
