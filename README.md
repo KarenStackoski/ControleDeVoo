@@ -6,6 +6,7 @@ Projeto da disciplina de InteligÃªncia Artificial (Machine Learning) para prediÃ
 
 ## Tecnologias utilizadas
 
+- Visual Studio Code (IDE)
 - Python 3.14.3
 - pandas
 - scikit-learn
